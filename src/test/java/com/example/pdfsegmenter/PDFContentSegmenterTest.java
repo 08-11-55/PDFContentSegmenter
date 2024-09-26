@@ -1,5 +1,6 @@
 package com.example.pdfsegmenter;
 
+import org.junit.After;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import java.io.File;
@@ -12,7 +13,7 @@ public class PDFContentSegmenterTest {
     public void testSegmentPDF() {
         try {
             // Load the file from the classpath
-            URL resource = getClass().getClassLoader().getResource("test.pdf");
+            URL resource = getClass().getClassLoader().getResource("test.pdf"); // If placed in src/test/resources/test
             if (resource == null) {
                 fail("test.pdf not found in classpath");
             }
@@ -34,6 +35,17 @@ public class PDFContentSegmenterTest {
 
         } catch (IOException e) {
             fail("IOException thrown: " + e.getMessage());
+        }
+    }
+
+    @After
+    public void cleanUp() {
+        // Clean up generated files
+        for (int i = 0; i < 3; i++) {
+            File segmentFile = new File("Segment_" + i + ".pdf");
+            if (segmentFile.exists()) {
+                segmentFile.delete();
+            }
         }
     }
 }
