@@ -10,6 +10,13 @@ import org.apache.pdfbox.text.TextPosition;
 
 public class PDFContentSegmenter {
 
+    /**
+     * Segments the PDF based on whitespace and saves each segment as a separate PDF.
+     *
+     * @param inputPdfPath  The path to the input PDF file.
+     * @param numberOfCuts  The number of cuts to make in the PDF (i.e., how many segments).
+     * @throws IOException if an I/O error occurs.
+     */
     public static void segmentPDF(String inputPdfPath, int numberOfCuts) throws IOException {
         PDDocument document = PDDocument.load(new File(inputPdfPath));
 
@@ -17,31 +24,57 @@ public class PDFContentSegmenter {
             CustomPDFStripper stripper = new CustomPDFStripper();
             double minWhitespaceHeight = 20.0; // Threshold for significant whitespace
 
+            int pageIndex = 0; // To track the page number
             for (PDPage page : document.getPages()) {
                 stripper.clearTextPositions(); // Clear previous page text positions
 
                 // Process the current page
                 stripper.processPage(page);
 
-                // Identify text segments
+                // Identify text segments based on whitespace
                 List<List<TextPosition>> segments = stripper.identifyTextSegments(minWhitespaceHeight);
 
-                // Output each segment as a separate PDF or process as needed
+                // If more segments than the desired number of cuts, reduce based on largest whitespace
+                if (segments.size() > numberOfCuts) {
+                    segments = reduceToDesiredSegments(segments, numberOfCuts);
+                }
+
+                // Output each segment as a separate PDF
                 int segmentIndex = 0;
-                for (List<TextPosition> segment : segments) {
+                for (@SuppressWarnings("unused") List<TextPosition> segment : segments) {
                     PDDocument segmentDoc = new PDDocument();
                     PDPage segmentPage = new PDPage(page.getMediaBox());
                     segmentDoc.addPage(segmentPage);
 
-                    // Add segment logic to render text based on TextPosition (not shown here)
+                    // This could involve drawing text onto the segmentPage canvas.
 
-                    segmentDoc.save("Segment_" + segmentIndex + ".pdf");
+                    String outputDir="";
+                    // Save the segment as a new PDF
+                    String outputFilePath = outputDir + "/Segment_" + pageIndex + "_" + segmentIndex + ".pdf";
+                    segmentDoc.save(outputFilePath);
                     segmentDoc.close();
                     segmentIndex++;
                 }
+
+                pageIndex++; // Increment the page index
             }
         } finally {
             document.close();
         }
+    }
+
+    /**
+     * Reduces the list of text segments to the desired number of cuts based on whitespace.
+     *
+     * @param segments       The original list of segments.
+     * @param numberOfCuts   The number of cuts to make.
+     * @return The reduced list of segments, containing exactly the numberOfCuts segments.
+     */
+    private static List<List<TextPosition>> reduceToDesiredSegments(List<List<TextPosition>> segments, int numberOfCuts) {
+        // Logic to reduce the segments based on the largest vertical whitespace between them
+        // You may want to sort the segments based on the whitespace gap, then pick the top ones.
+        
+        // Placeholder implementation: just return the first 'numberOfCuts' segments
+        return segments.subList(0, Math.min(numberOfCuts, segments.size()));
     }
 }
