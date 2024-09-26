@@ -12,10 +12,6 @@ public class PDFContentSegmenter {
 
     /**
      * Segments the PDF based on whitespace and saves each segment as a separate PDF.
-     *
-     * @param inputPdfPath  The path to the input PDF file.
-     * @param numberOfCuts  The number of cuts to make in the PDF (i.e., how many segments).
-     * @throws IOException if an I/O error occurs.
      */
     public static void segmentPDF(String inputPdfPath, int numberOfCuts) throws IOException {
         PDDocument document = PDDocument.load(new File(inputPdfPath));
@@ -65,10 +61,7 @@ public class PDFContentSegmenter {
 
     /**
      * Reduces the list of text segments to the desired number of cuts based on whitespace.
-     *
-     * @param segments       The original list of segments.
-     * @param numberOfCuts   The number of cuts to make.
-     * @return The reduced list of segments, containing exactly the numberOfCuts segments.
+    
      */
     private static List<List<TextPosition>> reduceToDesiredSegments(List<List<TextPosition>> segments, int numberOfCuts) {
         // Logic to reduce the segments based on the largest vertical whitespace between them

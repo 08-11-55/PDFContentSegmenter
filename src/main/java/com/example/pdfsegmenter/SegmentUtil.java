@@ -15,10 +15,7 @@ public class SegmentUtil {
 
     /**
      * Determines the largest vertical gaps (Y-axis cuts) between text positions for segmenting.
-     *
-     * @param textPositions List of TextPosition objects from the PDF.
-     * @param numberOfCuts  The number of cuts to make (i.e., the number of largest gaps to use).
-     * @return A list of the largest vertical gap positions (Y coordinates).
+     
      */
     public static List<Float> determineCuts(List<TextPosition> textPositions, int numberOfCuts) {
         // Get distinct Y-positions from text, sorted in ascending order
@@ -43,15 +40,6 @@ public class SegmentUtil {
         return largestGaps;
     }
 
-    /**
-     * Creates segmented PDFs based on cut positions derived from the largest whitespace gaps.
-     *
-     * @param document     The original PDF document.
-     * @param cutPositions List of Y-coordinates where cuts will be made.
-     * @param textPositions List of TextPosition objects that map the text on the page.
-     * @param outputDir    The directory where the segmented PDFs will be saved.
-     * @throws IOException If an I/O error occurs during PDF processing.
-     */
     public static void createSegmentedPDFs(PDDocument document, List<Float> cutPositions,
                                          List<TextPosition> textPositions, String outputDir) throws IOException {
         List<TextPosition> currentSegment = new ArrayList<>();
@@ -84,16 +72,6 @@ public class SegmentUtil {
         }
     }
 
-    /**
-     * Saves a single segment of the PDF as a new document.
-     *
-     * @param document      The original PDF document.
-     * @param page          The original page being segmented.
-     * @param segmentText   The list of TextPosition objects representing the segment's text.
-     * @param outputDir     The directory where the new PDF will be saved.
-     * @param segmentIndex  The index of the segment (for naming purposes).
-     * @throws IOException If an I/O error occurs during PDF saving.
-     */
     private static void saveSegment(PDDocument document, PDPage page, List<TextPosition> segmentText, 
                                     String outputDir, int segmentIndex) throws IOException {
         PDDocument newDoc = new PDDocument();
