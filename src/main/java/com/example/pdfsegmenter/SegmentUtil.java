@@ -58,6 +58,7 @@ public class SegmentUtil {
         int segmentIndex = 0;
 
         for (PDPage page : document.getPages()) {
+            @SuppressWarnings("unused")
             float pageHeight = page.getMediaBox().getHeight();
             
             // Split text based on Y-coordinate cut positions
